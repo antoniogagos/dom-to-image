@@ -155,23 +155,29 @@
             .then(util.delay(100))
             .then(function (image) {
                 var canvas = newCanvas(domNode);
-                let { sx, sy, sWidth, sHeight } = options.coords;
-                sx = sx * (image.naturalWidth / image.width);
-                sy = sy * (image.naturalHeight / image.height);
-                sWidth = sWidth * (image.naturalWidth / image.width);
-                sHeight = sHeight * (image.naturalHeight / image.height);
-                canvas.getContext('2d').drawImage(
-                    image,
-                    sx,
-                    sy,
-                    sWidth,
-                    sHeight,
-                    0,
-                    0,
-                    sWidth,
-                    sHeight
-                );
-                return cropPlusExport(image, sx, sy, sWidth, sHeight);
+                if (options.coords) {
+                    let { sx, sy, sWidth, sHeight } = options.coords;
+                    sx = sx * (image.naturalWidth / image.width);
+                    sy = sy * (image.naturalHeight / image.height);
+                    sWidth = sWidth * (image.naturalWidth / image.width);
+                    sHeight = sHeight * (image.naturalHeight / image.height);
+                    canvas.getContext('2d').drawImage(
+                        image,
+                        sx,
+                        sy,
+                        sWidth,
+                        sHeight,
+                        0,
+                        0,
+                        sWidth,
+                        sHeight
+                    );
+                    return cropPlusExport(image, sx, sy, sWidth, sHeight);
+                } else {
+                    canvas.getContext('2d').drawImage(image, 0, 0);
+                    return canvas;
+                }
+
             });
 
         function newCanvas(domNode) {
