@@ -155,24 +155,47 @@
             .then(util.delay(100))
             .then(function (image) {
                 var canvas = newCanvas(domNode);
-                canvas.getContext('2d').drawImage(image, 0, 0);
-                return canvas;
+                let { sx, sy, sWidth, sHeight } = options.coords;
+                sx = sx * (image.naturalWidth / image.width);
+                sy = sy * (image.naturalHeight / image.height);
+                sWidth = sWidth * (image.naturalWidth / image.width);
+                sHeight = sHeight * (image.naturalHeight / image.height);
+                canvas.getContext('2d').drawImage(
+                    image,
+                    sx,
+                    sy,
+                    sWidth,
+                    sHeight,
+                    0,
+                    0,
+                    sWidth,
+                    sHeight
+                );
+                return cropPlusExport(image, sx, sy, sWidth, sHeight);
             });
 
         function newCanvas(domNode) {
             var canvas = document.createElement('canvas');
             canvas.width = options.width || util.width(domNode);
             canvas.height = options.height || util.height(domNode);
-
             if (options.bgcolor) {
                 var ctx = canvas.getContext('2d');
                 ctx.fillStyle = options.bgcolor;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-
             return canvas;
         }
     }
+
+    function cropPlusExport(img, sx, sy, cropWidth, cropHeight) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = cropWidth;
+        canvas.height = cropHeight;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, sx, sy, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+        return canvas;
+      }
 
     function cloneNode(node, filter, root) {
         if (!root && filter && !filter(node)) return Promise.resolve();
