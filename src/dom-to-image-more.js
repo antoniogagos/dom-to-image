@@ -193,8 +193,27 @@
             .then(function(image) {
                 var scale = typeof(options.scale) !== 'number' ? 1 : options.scale;
                 var canvas = newCanvas(domNode, scale);
-                var ctx = canvas.getContext('2d');
-                if (image) {
+                if (!image) canvas;
+                if (options.coords) {
+                    let { sx, sy, sWidth, sHeight } = options.coords;
+                    sx = sx * (image.naturalWidth / image.width);
+                    sy = sy * (image.naturalHeight / image.height);
+                    sWidth = sWidth * (image.naturalWidth / image.width);
+                    sHeight = sHeight * (image.naturalHeight / image.height);
+                    canvas.getContext('2d').drawImage(
+                        image,
+                        sx,
+                        sy,
+                        sWidth,
+                        sHeight,
+                        0,
+                        0,
+                        sWidth,
+                        sHeight
+                    );
+                    return cropPlusExport(image, sx, sy, sWidth, sHeight);
+                } else {
+                    var ctx = canvas.getContext('2d');
                     ctx.scale(scale, scale);
                     ctx.drawImage(image, 0, 0);
                 }
@@ -215,6 +234,16 @@
             return canvas;
         }
     }
+
+    function cropPlusExport(img, sx, sy, cropWidth, cropHeight) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = cropWidth;
+        canvas.height = cropHeight;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, sx, sy, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+        return canvas;
+      }
 
     function cloneNode(node, filter, root, vector) {
         if (!root && filter && !filter(node)) return Promise.resolve();
