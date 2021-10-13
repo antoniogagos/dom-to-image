@@ -1,4 +1,4 @@
-(function(global) {
+(function(window) {
     'use strict';
 
     var util = newUtil();
@@ -35,7 +35,7 @@
     if (typeof exports === "object" && typeof module === "object")
         module.exports = domtoimage;
     else
-        global.domtoimage = domtoimage;
+        window.domtoimage = domtoimage;
 
     /**
      * @param {Node} node - The DOM Node object to render
@@ -307,7 +307,7 @@
                 if (vector) {
                     copyStyle(getUserComputedStyle(original, root), clone.style);
                 } else {
-                    copyStyle(global.getComputedStyle(original), clone.style);
+                    copyStyle(window.getComputedStyle(original), clone.style);
                 }
 
                 function copyFont(source, target) {
