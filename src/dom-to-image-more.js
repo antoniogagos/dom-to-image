@@ -195,7 +195,7 @@
                 var canvas = newCanvas(domNode, scale);
                 var ctx = canvas.getContext('2d');
                 ctx.scale(scale, scale);
-                if (!image) canvas;
+                if (!image) return canvas;
                 if (options.coords) {
                     let { sx, sy, sWidth, sHeight } = options.coords;
                     sx = sx * (image.naturalWidth / image.width);
