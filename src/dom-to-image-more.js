@@ -193,6 +193,8 @@
             .then(function(image) {
                 var scale = typeof(options.scale) !== 'number' ? 1 : options.scale;
                 var canvas = newCanvas(domNode, scale);
+                var ctx = canvas.getContext('2d');
+                ctx.scale(scale, scale);
                 if (!image) canvas;
                 if (options.coords) {
                     let { sx, sy, sWidth, sHeight } = options.coords;
@@ -200,7 +202,7 @@
                     sy = sy * (image.naturalHeight / image.height);
                     sWidth = sWidth * (image.naturalWidth / image.width);
                     sHeight = sHeight * (image.naturalHeight / image.height);
-                    canvas.getContext('2d').drawImage(
+                    ctx.drawImage(
                         image,
                         sx,
                         sy,
@@ -213,8 +215,6 @@
                     );
                     return cropPlusExport(image, sx, sy, sWidth, sHeight);
                 } else {
-                    var ctx = canvas.getContext('2d');
-                    ctx.scale(scale, scale);
                     ctx.drawImage(image, 0, 0);
                 }
                 return canvas;
@@ -230,7 +230,6 @@
                 ctx.fillStyle = options.bgcolor;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-
             return canvas;
         }
     }
